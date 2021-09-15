@@ -1,3 +1,9 @@
+plymouth (0.9.4git20200323-0ubuntu6.2uc1) focal; urgency=medium
+
+  * Compile statically plymouthd and include label plugin inside it
+
+ -- Alfonso Sanchez-Beato (email Canonical) <alfonso.sanchez-beato@canonical.com>  Wed, 15 Sep 2021 16:11:11 +0200
+
 plymouth (0.9.4git20200323-0ubuntu6.2) focal; urgency=medium
 
   * debian/patches/timeout-for-ping.patch: Raise the ping timeout from 2 to
