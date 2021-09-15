@@ -13,3 +13,4 @@ ubuntu-spinner-style.patch
 ubuntu-spinner-fsck.patch
 ubuntu-logo.patch
 ubuntu-text.patch
+0016-compile-some-libs-statically-inside-plymouthd.patch
