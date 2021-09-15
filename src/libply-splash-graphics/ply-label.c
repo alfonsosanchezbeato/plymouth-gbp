@@ -32,6 +32,8 @@
 #include <unistd.h>
 #include <wchar.h>
 
+#include <dlfcn.h>
+
 #include "ply-label-plugin.h"
 #include "ply-event-loop.h"
 #include "ply-list.h"
@@ -96,10 +98,14 @@ ply_label_load_plugin (ply_label_t *label)
 
         get_plugin_interface_function_t get_label_plugin_interface;
 
-        label->module_handle = ply_open_module (PLYMOUTH_PLUGIN_PATH "label.so");
+        label->module_handle = (ply_module_handle_t *)
+                               dlopen (NULL,
+                                       RTLD_NODELETE | RTLD_NOW | RTLD_LOCAL);
 
-        if (label->module_handle == NULL)
+        if (label->module_handle == NULL) {
+                ply_trace ("Could not load handle for plymouthd: %s", dlerror ());
                 return false;
+        }
 
         get_label_plugin_interface = (get_plugin_interface_function_t)
                                      ply_module_look_up_function (label->module_handle,

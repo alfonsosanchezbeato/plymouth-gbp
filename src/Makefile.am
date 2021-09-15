@@ -5,6 +5,7 @@ endif
 AM_CPPFLAGS = -I$(top_srcdir)                                                 \
            -I$(srcdir)/libply                                                 \
            -I$(srcdir)/libply-splash-core                                     \
+           -I$(srcdir)/libply-splash-graphics                                 \
            -I$(srcdir)                                                        \
            -DPLYMOUTH_LOG_DIRECTORY=\"$(localstatedir)/log\"                  \
            -DPLYMOUTH_SPOOL_DIRECTORY=\"$(localstatedir)/spool/plymouth\"     \
@@ -14,7 +15,7 @@ AM_CPPFLAGS = -I$(top_srcdir)                                                 \
 plymouthdbindir = $(plymouthdaemondir)
 plymouthdbin_PROGRAMS = plymouthd
 
-plymouthd_CFLAGS = $(PLYMOUTH_CFLAGS)                                         \
+plymouthd_CFLAGS = $(PLYMOUTH_CFLAGS) $(PANGO_CFLAGS)                         \
 		   -rdynamic                                                  \
 		   -DPLYMOUTH_PLUGIN_PATH=\"$(PLYMOUTH_PLUGIN_PATH)\"         \
 		   -DPLYMOUTH_THEME_PATH=\"$(PLYMOUTH_THEME_PATH)/\"          \
@@ -22,12 +23,33 @@ plymouthd_CFLAGS = $(PLYMOUTH_CFLAGS)                                         \
 		   -DPLYMOUTH_RUNTIME_DIR=\"$(PLYMOUTH_RUNTIME_DIR)\"         \
 		   -DPLYMOUTH_CONF_DIR=\"$(PLYMOUTH_CONF_DIR)/\"              \
 		   -DPLYMOUTH_RUNTIME_THEME_PATH=\"$(PLYMOUTH_RUNTIME_THEME_PATH)/\"
-plymouthd_LDADD = $(PLYMOUTH_LIBS) libply/libply.la libply-splash-core/libply-splash-core.la
+plymouthd_LDADD = -l:libcairo.a \
+                  -l:libfontconfig.a \
+                  -l:libfreetype.a \
+                  -l:libpng.a \
+                  -l:libpixman-1.a \
+                  -l:libpangocairo-1.0.a \
+                  -l:libpango-1.0.a \
+                  -l:libpangoft2-1.0.a \
+                  -l:libharfbuzz.a \
+                  -l:libthai.a \
+                  -l:libfribidi.a \
+                  -l:libdatrie.a \
+                  -lgraphite2 \
+                  -lexpat \
+                  -luuid \
+                  -lglib-2.0 \
+                  -lgobject-2.0 \
+                  -lz \
+                  -lpthread \
+                  $(PLYMOUTH_LIBS) \
+                  libply/libply.la libply-splash-core/libply-splash-core.la
 plymouthd_SOURCES =                                                            \
                    ply-boot-protocol.h                                        \
                    ply-boot-server.h                                          \
                    ply-boot-server.c                                          \
                    plugins/splash/details/plugin.c                  \
+                   label.c                                          \
                    main.c
 
 plymouthdrundir = $(localstatedir)/run/plymouth
