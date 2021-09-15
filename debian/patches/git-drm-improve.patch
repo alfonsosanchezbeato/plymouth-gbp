@@ -1,7 +1,6 @@
-From b1273639823f4010d88557ab716c41aa200c5d76 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 23 Mar 2020 17:38:18 +0100
-Subject: [PATCH 1/2] ply-device-manager: Only consume one udev event at a time
+Subject: ply-device-manager: Only consume one udev event at a time
 
 Commit f9e376797a91 ("ply-device-manager: Consume all events in one go")
 changed ply-device-manager to consume all pending udev events in one go
@@ -38,8 +37,9 @@ This reverts commit f9e376797a91ad5fbc1f8e8e4aea778f4f22397c.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/libply-splash-core/ply-device-manager.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ src/libply-splash-core/ply-device-manager.c | 16 ++-----
+ src/plugins/renderers/drm/plugin.c          | 72 ++++++++++++++++++-----------
+ 2 files changed, 50 insertions(+), 38 deletions(-)
 
 diff --git a/src/libply-splash-core/ply-device-manager.c b/src/libply-splash-core/ply-device-manager.c
 index 160b8cb..f65d731 100644
@@ -95,42 +95,6 @@ index 160b8cb..f65d731 100644
                                                       NULL,
                                                       manager);
  }
--- 
-2.24.1
-
-
-From 3aa76fcd872b5a528bf99a740cbdb2b443434ac0 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Tue, 24 Mar 2020 23:17:42 +0100
-Subject: [PATCH 2/2] drm: Do not unnecessarily get output info twice
-
-When a kernel-mode-setting driver loads it will trigger an add udev event
-for /dev/dri/card0, followed by one udev change event per connector on the
-card. This means that after our initial probe of the card,
-create_heads_for_active_connectors is called a number of times for all the
-udev change events.
-
-After the initial enum our outputs array will contain active entries for
-all connected displays. Meaning that the first loop in
-create_heads_for_active_connectors would call get_output_info for
-these outputs. Under the hood this does a number of ioctls and especially
-the drmModeGetConnector call can be quite expensive.
-
-Then in the second loop create_heads_for_active_connectors would call
-get_output_info for all connectors, including for the once which were
-checked in the first loop.
-
-There is no reason why we cannot check if active connectors in the
-old outputs array have changed when we are calling get_output_info for
-all connectors to build the new array. This avoids unnecessarily making
-the expensive get_output_info call twice for active connectors in the
-old outputs array.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- src/plugins/renderers/drm/plugin.c | 72 +++++++++++++++++++-----------
- 1 file changed, 46 insertions(+), 26 deletions(-)
-
 diff --git a/src/plugins/renderers/drm/plugin.c b/src/plugins/renderers/drm/plugin.c
 index 1ef2802..4dbf8da 100644
 --- a/src/plugins/renderers/drm/plugin.c
@@ -237,6 +201,3 @@ index 1ef2802..4dbf8da 100644
          /* Step 3:
           * Drop controllers for clones for which we've picked different modes.
           */
--- 
-2.24.1
-

@@ -1,12 +1,16 @@
-Description: Removed explicit printing of ':'
- Removed the explicit printing of ':'. Expected to be a part of the prompt.
-Author: Surbhi Palande <surbhi.palande@canonical.com>
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Wed, 15 Sep 2021 15:59:44 +0200
+Subject: details-remove-separator
 
-Index: plymouth-0.9.4/src/plugins/splash/details/plugin.c
-===================================================================
---- plymouth-0.9.4.orig/src/plugins/splash/details/plugin.c
-+++ plymouth-0.9.4/src/plugins/splash/details/plugin.c
-@@ -383,10 +383,8 @@ display_password (ply_boot_splash_plugin
+---
+ src/plugins/splash/details/plugin.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/src/plugins/splash/details/plugin.c b/src/plugins/splash/details/plugin.c
+index f534450..5264d02 100644
+--- a/src/plugins/splash/details/plugin.c
++++ b/src/plugins/splash/details/plugin.c
+@@ -383,10 +383,8 @@ display_password (ply_boot_splash_plugin_t *plugin,
                                  strlen (prompt));
          else
                  write_on_views (plugin,

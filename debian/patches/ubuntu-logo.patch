@@ -1,10 +1,46 @@
-Description: Add ubuntu-logo theme
-Author: Alberto Milone <alberto.milone@canonical.com>
-Forwarded: not-needed
-Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/Makefile.am
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Wed, 15 Sep 2021 15:59:44 +0200
+Subject: ubuntu-logo
+
 ===================================================================
+---
+ configure.ac                               |    1 +
+ themes/Makefile.am                         |    2 +-
+ themes/ubuntu-logo/Makefile.am             |   24 +
+ themes/ubuntu-logo/ubuntu-logo.grub        |    5 +
+ themes/ubuntu-logo/ubuntu-logo.plymouth.in |    8 +
+ themes/ubuntu-logo/ubuntu-logo.script      | 1178 ++++++++++++++++++++++++++++
+ 6 files changed, 1217 insertions(+), 1 deletion(-)
+ create mode 100644 themes/ubuntu-logo/Makefile.am
+ create mode 100644 themes/ubuntu-logo/ubuntu-logo.grub
+ create mode 100644 themes/ubuntu-logo/ubuntu-logo.plymouth.in
+ create mode 100644 themes/ubuntu-logo/ubuntu-logo.script
+
+diff --git a/configure.ac b/configure.ac
+index d34245a..546dee1 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -330,6 +330,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
+            themes/glow/Makefile
+            themes/spinner/Makefile
+            themes/script/Makefile
++           themes/ubuntu-logo/Makefile
+            themes/bgrt/Makefile
+            images/Makefile
+ 	   scripts/plymouth-generate-initrd
+diff --git a/themes/Makefile.am b/themes/Makefile.am
+index 8e4566e..0d204af 100644
+--- a/themes/Makefile.am
++++ b/themes/Makefile.am
+@@ -1,2 +1,2 @@
+-SUBDIRS = spinfinity fade-in text details solar glow script spinner tribar bgrt
++SUBDIRS = spinfinity fade-in text details solar glow script spinner tribar ubuntu-logo bgrt
+ MAINTAINERCLEANFILES = Makefile.in
+diff --git a/themes/ubuntu-logo/Makefile.am b/themes/ubuntu-logo/Makefile.am
+new file mode 100644
+index 0000000..9387bd2
 --- /dev/null
-+++ plymouth-0.9.4git20200323/themes/ubuntu-logo/Makefile.am
++++ b/themes/ubuntu-logo/Makefile.am
 @@ -0,0 +1,24 @@
 +themedir = $(datadir)/plymouth/themes/ubuntu-logo
 +nodist_theme_DATA = ubuntu-logo.plymouth
@@ -30,10 +66,22 @@ Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/Makefile.am
 +	       $(srcdir)/ubuntu-logo.plymouth.in > ubuntu-logo.plymouth
 +
 +EXTRA_DIST = ubuntu-logo.plymouth.in
-Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.plymouth.in
-===================================================================
+diff --git a/themes/ubuntu-logo/ubuntu-logo.grub b/themes/ubuntu-logo/ubuntu-logo.grub
+new file mode 100644
+index 0000000..f58c098
 --- /dev/null
-+++ plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.plymouth.in
++++ b/themes/ubuntu-logo/ubuntu-logo.grub
+@@ -0,0 +1,5 @@
++# previously #2c001e 44,0,30,0
++# now yaru #4f194c 79,25,76
++#if background_color 79,25,76,0; then
++#  clear
++#fi
+diff --git a/themes/ubuntu-logo/ubuntu-logo.plymouth.in b/themes/ubuntu-logo/ubuntu-logo.plymouth.in
+new file mode 100644
+index 0000000..b5cb7f4
+--- /dev/null
++++ b/themes/ubuntu-logo/ubuntu-logo.plymouth.in
 @@ -0,0 +1,8 @@
 +[Plymouth Theme]
 +Name=Ubuntu Logo
@@ -43,10 +91,11 @@ Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.plymouth.in
 +[script]
 +ImageDir=@PLYMOUTH_THEME_PATH@/ubuntu-logo
 +ScriptFile=@PLYMOUTH_THEME_PATH@/ubuntu-logo/ubuntu-logo.script
-Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.script
-===================================================================
+diff --git a/themes/ubuntu-logo/ubuntu-logo.script b/themes/ubuntu-logo/ubuntu-logo.script
+new file mode 100644
+index 0000000..17a3bb3
 --- /dev/null
-+++ plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.script
++++ b/themes/ubuntu-logo/ubuntu-logo.script
 @@ -0,0 +1,1178 @@
 +#  ubuntu-logo.script - boot splash plugin
 +# 
@@ -1226,33 +1275,3 @@ Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.script
 +}
 +
 +Plymouth.SetQuitFunction(quit_callback);
-Index: plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.grub
-===================================================================
---- /dev/null
-+++ plymouth-0.9.4git20200323/themes/ubuntu-logo/ubuntu-logo.grub
-@@ -0,0 +1,5 @@
-+# previously #2c001e 44,0,30,0
-+# now yaru #4f194c 79,25,76
-+#if background_color 79,25,76,0; then
-+#  clear
-+#fi
-Index: plymouth-0.9.4git20200323/configure.ac
-===================================================================
---- plymouth-0.9.4git20200323.orig/configure.ac
-+++ plymouth-0.9.4git20200323/configure.ac
-@@ -330,6 +330,7 @@ AC_CONFIG_FILES([Makefile po/Makefile.in
-            themes/glow/Makefile
-            themes/spinner/Makefile
-            themes/script/Makefile
-+           themes/ubuntu-logo/Makefile
-            themes/bgrt/Makefile
-            images/Makefile
- 	   scripts/plymouth-generate-initrd
-Index: plymouth-0.9.4git20200323/themes/Makefile.am
-===================================================================
---- plymouth-0.9.4git20200323.orig/themes/Makefile.am
-+++ plymouth-0.9.4git20200323/themes/Makefile.am
-@@ -1,2 +1,2 @@
--SUBDIRS = spinfinity fade-in text details solar glow script spinner tribar bgrt
-+SUBDIRS = spinfinity fade-in text details solar glow script spinner tribar ubuntu-logo bgrt
- MAINTAINERCLEANFILES = Makefile.in

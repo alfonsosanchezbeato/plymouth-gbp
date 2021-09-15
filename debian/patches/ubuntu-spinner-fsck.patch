@@ -1,20 +1,19 @@
-From 60bb5d20a12c6bc92e0bf5aa0aea8f4ca3ddebd5 Mon Sep 17 00:00:00 2001
 From: Daniel van Vugt <daniel.van.vugt@canonical.com>
 Date: Fri, 27 Mar 2020 18:47:39 +0800
-Subject: [PATCH] two-step: Add support for fsck status messages
+Subject: two-step: Add support for fsck status messages
 
 Related to https://gitlab.freedesktop.org/plymouth/plymouth/-/issues/62 but
 not a full solution. Only supports two-step right now.
 
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/1867130
 ---
- src/plugins/splash/two-step/plugin.c | 160 ++++++++++++++++++++++++---
- 1 file changed, 146 insertions(+), 14 deletions(-)
+ src/plugins/splash/two-step/plugin.c | 161 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 147 insertions(+), 14 deletions(-)
 
-Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
-===================================================================
---- plymouth-0.9.4git20200323.orig/src/plugins/splash/two-step/plugin.c
-+++ plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
+diff --git a/src/plugins/splash/two-step/plugin.c b/src/plugins/splash/two-step/plugin.c
+index b8beacd..e995fdc 100644
+--- a/src/plugins/splash/two-step/plugin.c
++++ b/src/plugins/splash/two-step/plugin.c
 @@ -178,6 +178,12 @@ struct _ply_boot_splash_plugin
          ply_trigger_t                      *idle_trigger;
          ply_trigger_t                      *stop_trigger;
@@ -37,7 +36,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
  };
  
  ply_boot_splash_plugin_interface_t *ply_boot_splash_plugin_get_interface (void);
-@@ -196,6 +204,9 @@ static void display_message (ply_boot_sp
+@@ -196,6 +204,9 @@ static void display_message (ply_boot_splash_plugin_t *plugin,
  static void become_idle (ply_boot_splash_plugin_t *plugin,
                           ply_trigger_t            *idle_trigger);
  static void view_show_message (view_t *view, const char *message);
@@ -68,7 +67,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
  static void
  view_start_progress_animation (view_t *view)
  {
-@@ -815,7 +840,7 @@ view_start_progress_animation (view_t *v
+@@ -815,7 +840,7 @@ view_start_progress_animation (view_t *view)
          ply_pixel_display_draw_area (view->display, 0, 0,
                                       screen_width, screen_height);
  
@@ -77,7 +76,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
                  if (plugin->progress_bar_width != -1)
                          width = plugin->progress_bar_width;
                  else
-@@ -829,8 +854,7 @@ view_start_progress_animation (view_t *v
+@@ -829,8 +854,7 @@ view_start_progress_animation (view_t *view)
                  view->animation_bottom = y + height;
          }
  
@@ -87,7 +86,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
                  width = ply_throbber_get_width (view->throbber);
                  height = ply_throbber_get_height (view->throbber);
                  x = plugin->animation_horizontal_alignment * screen_width - width / 2.0;
-@@ -849,8 +873,7 @@ view_start_progress_animation (view_t *v
+@@ -849,8 +873,7 @@ view_start_progress_animation (view_t *view)
              plugin->mode == PLY_BOOT_SPLASH_MODE_REBOOT)
                  return;
  
@@ -97,7 +96,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
                  width = ply_progress_animation_get_width (view->progress_animation);
                  height = ply_progress_animation_get_height (view->progress_animation);
                  x = plugin->animation_horizontal_alignment * screen_width - width / 2.0;
-@@ -1254,6 +1277,10 @@ destroy_plugin (ply_boot_splash_plugin_t
+@@ -1254,6 +1277,10 @@ destroy_plugin (ply_boot_splash_plugin_t *plugin)
          free (plugin->font);
          free (plugin->title_font);
          free (plugin->animation_dir);
@@ -108,7 +107,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
          free_views (plugin);
          free (plugin);
  }
-@@ -1265,7 +1292,7 @@ start_end_animation (ply_boot_splash_plu
+@@ -1265,7 +1292,7 @@ start_end_animation (ply_boot_splash_plugin_t *plugin,
          ply_list_node_t *node;
          view_t *view;
  
@@ -145,10 +144,11 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
                          ply_animation_draw_area (view->end_animation,
                                                   pixel_buffer,
                                                   x, y, width, height);
-@@ -1688,10 +1712,76 @@ show_splash_screen (ply_boot_splash_plug
+@@ -1687,11 +1711,77 @@ show_splash_screen (ply_boot_splash_plugin_t *plugin,
+         return true;
  }
  
- static void
++static void
 +update_fsck (ply_boot_splash_plugin_t *plugin,
 +             const char               *device_name,
 +             float                     percent,
@@ -197,7 +197,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
 +                start_progress_animation (plugin);
 +}
 +
-+static void
+ static void
  update_status (ply_boot_splash_plugin_t *plugin,
                 const char               *status)
  {
@@ -222,7 +222,7 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
  }
  
  static void
-@@ -1747,6 +1837,9 @@ on_boot_progress (ply_boot_splash_plugin
+@@ -1747,6 +1837,9 @@ on_boot_progress (ply_boot_splash_plugin_t *plugin,
          if (plugin->is_idle)
                  return;
  
@@ -232,10 +232,11 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
          /*
           * If we do not have an end animation, we keep showing progress until
           * become_idle gets called.
-@@ -1916,6 +2009,37 @@ show_message (ply_boot_splash_plugin_t *
+@@ -1915,6 +2008,37 @@ show_message (ply_boot_splash_plugin_t *plugin,
+         }
  }
  
- static void
++static void
 +update_message (ply_boot_splash_plugin_t *plugin)
 +{
 +        char message[4096];
@@ -266,10 +267,9 @@ Index: plymouth-0.9.4git20200323/src/plugins/splash/two-step/plugin.c
 +        show_message (plugin, message);
 +}
 +
-+static void
+ static void
  system_update (ply_boot_splash_plugin_t *plugin,
                 int                       progress)
- {
 @@ -1974,7 +2098,16 @@ static void
  display_message (ply_boot_splash_plugin_t *plugin,
                   const char               *message)

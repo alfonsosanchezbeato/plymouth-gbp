@@ -1,12 +1,22 @@
-Author: Laurent Bigonville <bigon@debian.org
-Description:
- Handle 'nosplash' boot parameter as 'plymouth.enable=0' in system unit
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Wed, 15 Sep 2021 15:59:44 +0200
+Subject: cmdline
 
-Index: plymouth-0.9.4git20200109/systemd-units/plymouth-halt.service.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/plymouth-halt.service.in
-+++ plymouth-0.9.4git20200109/systemd-units/plymouth-halt.service.in
-@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager
+---
+ systemd-units/plymouth-halt.service.in                 | 1 +
+ systemd-units/plymouth-kexec.service.in                | 1 +
+ systemd-units/plymouth-poweroff.service.in             | 1 +
+ systemd-units/plymouth-reboot.service.in               | 1 +
+ systemd-units/plymouth-start.service.in                | 1 +
+ systemd-units/systemd-ask-password-plymouth.path.in    | 1 +
+ systemd-units/systemd-ask-password-plymouth.service.in | 1 +
+ 7 files changed, 7 insertions(+)
+
+diff --git a/systemd-units/plymouth-halt.service.in b/systemd-units/plymouth-halt.service.in
+index 38ae98c..abc6927 100644
+--- a/systemd-units/plymouth-halt.service.in
++++ b/systemd-units/plymouth-halt.service.in
+@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager.service plymouth-start.service
  Before=systemd-halt.service
  DefaultDependencies=no
  ConditionKernelCommandLine=!plymouth.enable=0
@@ -14,11 +24,11 @@ Index: plymouth-0.9.4git20200109/systemd-units/plymouth-halt.service.in
  ConditionVirtualization=!container
  
  [Service]
-Index: plymouth-0.9.4git20200109/systemd-units/plymouth-kexec.service.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/plymouth-kexec.service.in
-+++ plymouth-0.9.4git20200109/systemd-units/plymouth-kexec.service.in
-@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager
+diff --git a/systemd-units/plymouth-kexec.service.in b/systemd-units/plymouth-kexec.service.in
+index bed5eb7..c92049b 100644
+--- a/systemd-units/plymouth-kexec.service.in
++++ b/systemd-units/plymouth-kexec.service.in
+@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager.service plymouth-start.service
  Before=systemd-kexec.service
  DefaultDependencies=no
  ConditionKernelCommandLine=!plymouth.enable=0
@@ -26,11 +36,11 @@ Index: plymouth-0.9.4git20200109/systemd-units/plymouth-kexec.service.in
  ConditionVirtualization=!container
  
  [Service]
-Index: plymouth-0.9.4git20200109/systemd-units/plymouth-poweroff.service.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/plymouth-poweroff.service.in
-+++ plymouth-0.9.4git20200109/systemd-units/plymouth-poweroff.service.in
-@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager
+diff --git a/systemd-units/plymouth-poweroff.service.in b/systemd-units/plymouth-poweroff.service.in
+index 7891e97..8cbe883 100644
+--- a/systemd-units/plymouth-poweroff.service.in
++++ b/systemd-units/plymouth-poweroff.service.in
+@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager.service plymouth-start.service
  Before=systemd-poweroff.service
  DefaultDependencies=no
  ConditionKernelCommandLine=!plymouth.enable=0
@@ -38,11 +48,11 @@ Index: plymouth-0.9.4git20200109/systemd-units/plymouth-poweroff.service.in
  ConditionVirtualization=!container
  
  [Service]
-Index: plymouth-0.9.4git20200109/systemd-units/plymouth-reboot.service.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/plymouth-reboot.service.in
-+++ plymouth-0.9.4git20200109/systemd-units/plymouth-reboot.service.in
-@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager
+diff --git a/systemd-units/plymouth-reboot.service.in b/systemd-units/plymouth-reboot.service.in
+index 147f824..5d70938 100644
+--- a/systemd-units/plymouth-reboot.service.in
++++ b/systemd-units/plymouth-reboot.service.in
+@@ -4,6 +4,7 @@ After=getty@tty1.service display-manager.service plymouth-start.service
  Before=systemd-reboot.service
  DefaultDependencies=no
  ConditionKernelCommandLine=!plymouth.enable=0
@@ -50,11 +60,11 @@ Index: plymouth-0.9.4git20200109/systemd-units/plymouth-reboot.service.in
  ConditionVirtualization=!container
  
  [Service]
-Index: plymouth-0.9.4git20200109/systemd-units/plymouth-start.service.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/plymouth-start.service.in
-+++ plymouth-0.9.4git20200109/systemd-units/plymouth-start.service.in
-@@ -5,6 +5,7 @@ Wants=systemd-ask-password-plymouth.path
+diff --git a/systemd-units/plymouth-start.service.in b/systemd-units/plymouth-start.service.in
+index 5d88f60..208f51b 100644
+--- a/systemd-units/plymouth-start.service.in
++++ b/systemd-units/plymouth-start.service.in
+@@ -5,6 +5,7 @@ Wants=systemd-ask-password-plymouth.path systemd-vconsole-setup.service
  After=systemd-vconsole-setup.service systemd-udev-trigger.service systemd-udevd.service
  Before=systemd-ask-password-plymouth.service
  ConditionKernelCommandLine=!plymouth.enable=0
@@ -62,10 +72,10 @@ Index: plymouth-0.9.4git20200109/systemd-units/plymouth-start.service.in
  ConditionVirtualization=!container
  
  [Service]
-Index: plymouth-0.9.4git20200109/systemd-units/systemd-ask-password-plymouth.path.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/systemd-ask-password-plymouth.path.in
-+++ plymouth-0.9.4git20200109/systemd-units/systemd-ask-password-plymouth.path.in
+diff --git a/systemd-units/systemd-ask-password-plymouth.path.in b/systemd-units/systemd-ask-password-plymouth.path.in
+index 826a6b3..a343db8 100644
+--- a/systemd-units/systemd-ask-password-plymouth.path.in
++++ b/systemd-units/systemd-ask-password-plymouth.path.in
 @@ -6,6 +6,7 @@ Conflicts=shutdown.target
  After=plymouth-start.service
  Before=basic.target shutdown.target
@@ -74,10 +84,10 @@ Index: plymouth-0.9.4git20200109/systemd-units/systemd-ask-password-plymouth.pat
  ConditionPathExists=/run/plymouth/pid
  ConditionVirtualization=!container
  
-Index: plymouth-0.9.4git20200109/systemd-units/systemd-ask-password-plymouth.service.in
-===================================================================
---- plymouth-0.9.4git20200109.orig/systemd-units/systemd-ask-password-plymouth.service.in
-+++ plymouth-0.9.4git20200109/systemd-units/systemd-ask-password-plymouth.service.in
+diff --git a/systemd-units/systemd-ask-password-plymouth.service.in b/systemd-units/systemd-ask-password-plymouth.service.in
+index 81980f0..aa8094c 100644
+--- a/systemd-units/systemd-ask-password-plymouth.service.in
++++ b/systemd-units/systemd-ask-password-plymouth.service.in
 @@ -6,6 +6,7 @@ Conflicts=shutdown.target
  After=plymouth-start.service
  Before=shutdown.target

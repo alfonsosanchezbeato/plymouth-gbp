@@ -1,13 +1,15 @@
-Description: Remove systemd-vconsole-setup.service as it's not shipped in Debian
- Remove systemd-vconsole-setup.service as it's not shipped in Debian and add
- After=keyboard-setup.service
-Author: Laurent Bigonville <bigon@debian.org>
-Forwarded: not-needed
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Wed, 15 Sep 2021 15:59:44 +0200
+Subject: drop-systemd-vconsole-setup-service
 
-Index: plymouth-0.9.4git20190712/systemd-units/plymouth-start.service.in
-===================================================================
---- plymouth-0.9.4git20190712.orig/systemd-units/plymouth-start.service.in
-+++ plymouth-0.9.4git20190712/systemd-units/plymouth-start.service.in
+---
+ systemd-units/plymouth-start.service.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/systemd-units/plymouth-start.service.in b/systemd-units/plymouth-start.service.in
+index 208f51b..acac661 100644
+--- a/systemd-units/plymouth-start.service.in
++++ b/systemd-units/plymouth-start.service.in
 @@ -1,8 +1,8 @@
  [Unit]
  Description=Show Plymouth Boot Screen

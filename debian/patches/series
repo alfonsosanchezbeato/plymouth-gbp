@@ -1,10 +1,7 @@
 0005-cmdline.patch
 drop-systemd-vconsole-setup-service.patch
 git-drm-improve.patch
-
 gitlab-center-messages.patch
-
-## Ubuntu
 misc-changes.patch
 details-remove-separator.patch
 details-update-status.patch
@@ -14,7 +11,5 @@ ubuntu-default-devicetimeout.patch
 timeout-for-ping.patch
 ubuntu-spinner-style.patch
 ubuntu-spinner-fsck.patch
-
-# Ubuntu themes
 ubuntu-logo.patch
 ubuntu-text.patch

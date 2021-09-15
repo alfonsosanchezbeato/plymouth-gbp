@@ -1,18 +1,20 @@
-Description: Don't wait forever for a ping reply.
- In the event that plymouthd is not responding the plymouth client will wait
- forever when sending a ping to the daemon. Instead of waiting forever timeout
- after a while.
+From: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Date: Wed, 15 Sep 2021 15:59:44 +0200
+Subject: timeout-for-ping
 
 Origin: Ubuntu
 Author: Brian Murray <brian.murray@ubuntu.com>
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/1705345, https://bugs.launchpad.net/bugs/1872159
 Forwarded: no
 Last-Update: 2020-10-21
+---
+ src/client/plymouth.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Index: plymouth_0.9.4git20200323-0ubuntu6.2/src/client/plymouth.c
-===================================================================
---- plymouth_0.9.4git20200323-0ubuntu6.2.orig/src/client/plymouth.c
-+++ plymouth_0.9.4git20200323-0ubuntu6.2/src/client/plymouth.c
+diff --git a/src/client/plymouth.c b/src/client/plymouth.c
+index be74ae7..11b8910 100644
+--- a/src/client/plymouth.c
++++ b/src/client/plymouth.c
 @@ -75,6 +75,13 @@ typedef struct
          char    *keys;
  } key_answer_state_t;
