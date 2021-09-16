@@ -1,0 +1,23 @@
+From: =?utf-8?q?Alfonso_S=C3=A1nchez-Beato?=
+ <alfonso.sanchez-beato@canonical.com>
+Date: Thu, 16 Sep 2021 11:57:53 +0200
+Subject: Ignore serial consoles by default
+
+---
+ src/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/main.c b/src/main.c
+index c6c138c..0ee781a 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -2281,7 +2281,8 @@ main (int    argc,
+         if (isnan (state.device_timeout) || state.device_timeout <= 0.0)
+                 state.device_timeout = 8.0;
+ 
+-        if (ply_kernel_command_line_has_argument ("plymouth.ignore-serial-consoles"))
++        /* Ignore serial by default */
++        if (!ply_kernel_command_line_has_argument ("plymouth.use-serial-consoles"))
+                 device_manager_flags |= PLY_DEVICE_MANAGER_FLAGS_IGNORE_SERIAL_CONSOLES;
+ 
+         if (ply_kernel_command_line_has_argument ("plymouth.ignore-udev") ||
