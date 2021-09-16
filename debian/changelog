@@ -1,8 +1,11 @@
-plymouth (0.9.4git20200323-0ubuntu6.2uc1) focal; urgency=medium
+plymouth (0.9.4git20200323-0ubuntu6.3) UNRELEASED; urgency=medium
 
-  * Compile statically plymouthd and include label plugin inside it
+  [ Alfonso Sanchez-Beato (email Canonical) ]
+  * Add patch to compile statically some libraries
+  * Remove plymouth-label package
+  * Add patches for UC support
 
- -- Alfonso Sanchez-Beato (email Canonical) <alfonso.sanchez-beato@canonical.com>  Wed, 15 Sep 2021 16:11:11 +0200
+ -- Alfonso Sanchez-Beato (email Canonical) <alfonso.sanchez-beato@canonical.com>  Thu, 16 Sep 2021 12:12:18 +0200
 
 plymouth (0.9.4git20200323-0ubuntu6.2) focal; urgency=medium
 

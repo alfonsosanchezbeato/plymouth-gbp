@@ -14,3 +14,5 @@ ubuntu-spinner-fsck.patch
 ubuntu-logo.patch
 ubuntu-text.patch
 0016-compile-some-libs-statically-inside-plymouthd.patch
+0017-Add-ThemePath-configuration-option.patch
+0018-Ignore-serial-consoles-by-default.patch
