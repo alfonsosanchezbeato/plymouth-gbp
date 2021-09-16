@@ -113,6 +113,7 @@ typedef struct
         char                   *override_splash_path;
         char                   *system_default_splash_path;
         char                   *distribution_default_splash_path;
+        char                   *extra_theme_path;
         const char             *default_tty;
 
         int                     number_of_errors;
@@ -277,6 +278,33 @@ show_messages (state_t *state)
 }
 
 static bool
+get_theme_path (const char *extra_path,
+                const char *splash_string,
+                char      **theme_path)
+{
+        const char *paths[] = { PLYMOUTH_RUNTIME_THEME_PATH,
+                                extra_path,
+                                PLYMOUTH_THEME_PATH };
+
+        for (size_t i = 0; i < sizeof (paths)/sizeof (paths[0]); ++i) {
+                if (paths[i] == NULL)
+                        continue;
+
+                asprintf (theme_path,
+                          "%s/%s/%s.plymouth",
+                          paths[i], splash_string, splash_string);
+                if (ply_file_exists (*theme_path)) {
+                        ply_trace ("Theme is %s", *theme_path);
+                        return true;
+                }
+                ply_trace ("Theme %s not found", *theme_path);
+                free (*theme_path);
+        }
+
+        return false;
+}
+
+static bool
 load_settings (state_t    *state,
                const char *path,
                char      **theme_path)
@@ -297,17 +325,10 @@ load_settings (state_t    *state,
         if (splash_string == NULL)
                 goto out;
 
-        asprintf (theme_path,
-                  PLYMOUTH_RUNTIME_THEME_PATH "%s/%s.plymouth",
-                  splash_string, splash_string);
-        ply_trace ("Checking if %s exists", *theme_path);
-        if (!ply_file_exists (*theme_path)) {
-                ply_trace ("%s not found, fallbacking to " PLYMOUTH_THEME_PATH,
-                           *theme_path);
-                asprintf (theme_path,
-                          PLYMOUTH_THEME_PATH "%s/%s.plymouth",
-                          splash_string, splash_string);
-        }
+        state->extra_theme_path = ply_key_file_get_value (key_file, "Daemon", "ThemePath");
+
+        if (!get_theme_path (state->extra_theme_path, splash_string, theme_path))
+                goto out;
 
         if (isnan (state->splash_delay)) {
                 char *delay_string;
@@ -385,19 +406,10 @@ find_override_splash (state_t *state)
 
         if (splash_string != NULL) {
                 ply_trace ("Splash is configured to be '%s'", splash_string);
-                asprintf (&state->override_splash_path,
-                          PLYMOUTH_RUNTIME_THEME_PATH "%s/%s.plymouth",
-                          splash_string, splash_string);
 
-                ply_trace ("Checking if %s exists", state->override_splash_path);
-                if (!ply_file_exists (state->override_splash_path)) {
-                        ply_trace ("%s not found, fallbacking to " PLYMOUTH_THEME_PATH,
-                                   state->override_splash_path);
-                        free (state->override_splash_path);
-                        asprintf (&state->override_splash_path,
-                                  PLYMOUTH_THEME_PATH "%s/%s.plymouth",
-                                  splash_string, splash_string);
-                }
+                get_theme_path (state->extra_theme_path, splash_string,
+                                &state->override_splash_path);
+
                 free (splash_string);
         }
 
@@ -2316,6 +2328,11 @@ main (int    argc,
         }
 
         ply_free_error_log ();
+
+        free (state.override_splash_path);
+        free (state.system_default_splash_path);
+        free (state.distribution_default_splash_path);
+        free (state.extra_theme_path);
 
         return exit_code;
 }
