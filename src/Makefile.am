@@ -23,6 +23,8 @@ plymouthd_CFLAGS = $(PLYMOUTH_CFLAGS) $(PANGO_CFLAGS)                         \
 		   -DPLYMOUTH_RUNTIME_DIR=\"$(PLYMOUTH_RUNTIME_DIR)\"         \
 		   -DPLYMOUTH_CONF_DIR=\"$(PLYMOUTH_CONF_DIR)/\"              \
 		   -DPLYMOUTH_RUNTIME_THEME_PATH=\"$(PLYMOUTH_RUNTIME_THEME_PATH)/\"
+
+if ENABLE_STATIC
 plymouthd_LDADD = -l:libcairo.a \
                   -l:libfontconfig.a \
                   -l:libfreetype.a \
@@ -44,6 +46,10 @@ plymouthd_LDADD = -l:libcairo.a \
                   -lpthread \
                   $(PLYMOUTH_LIBS) \
                   libply/libply.la libply-splash-core/libply-splash-core.la
+else
+plymouthd_LDADD = $(PLYMOUTH_LIBS) libply/libply.la libply-splash-core/libply-splash-core.la
+endif
+
 plymouthd_SOURCES =                                                            \
                    ply-boot-protocol.h                                        \
                    ply-boot-server.h                                          \

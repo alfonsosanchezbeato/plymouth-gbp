@@ -92,6 +92,9 @@ if test x$enable_drm_renderer = xyes; then
   PKG_CHECK_MODULES(DRM, [libdrm])
 fi
 
+AC_ARG_ENABLE(static, AS_HELP_STRING([--enable-static],[enable partial static compilation against some libraries]),enable_static=$enableval,enable_static=no)
+AM_CONDITIONAL(ENABLE_STATIC,  [test "$enable_static" = yes])
+
 AC_ARG_ENABLE(documentation,
               AS_HELP_STRING([--enable-documentation],
                              [build documentation]),,
